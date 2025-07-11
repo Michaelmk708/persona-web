@@ -1,0 +1,50 @@
+
+{
+  "manifest_version": 3,
+  "name": "PersonaPulse - Portable Gig Persona",
+  "version": "1.0.0",
+  "description": "Discover verified gig worker personas across marketplaces",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "*://*.fiverr.com/*",
+    "*://*.upwork.com/*",
+    "*://*.freelancer.com/*",
+    "*://*.99designs.com/*",
+    "*://*.guru.com/*",
+    "*://*.peopleperhour.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.fiverr.com/*",
+        "*://*.upwork.com/*",
+        "*://*.freelancer.com/*",
+        "*://*.99designs.com/*",
+        "*://*.guru.com/*",
+        "*://*.peopleperhour.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "PersonaPulse"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["persona-card.html", "icons/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
