@@ -18,8 +18,8 @@ const Dashboard = () => {
   const [selectedPlatform, setSelectedPlatform] = useState('');
   const [username, setUsername] = useState('');
   const [platforms, setPlatforms] = useState([
-    { name: 'Fiverr', username: 'sarah_designer' },
-    { name: 'Upwork', username: 'sarah.creative' }
+    { name: 'Fiverr', username: 'mike_kinuthia' },
+    { name: 'Upwork', username: 'mike_kinuthia' }
   ]);
   const [portfolioItems, setPortfolioItems] = useState([
     { title: 'Brand Design Project', type: 'image', url: '#' },

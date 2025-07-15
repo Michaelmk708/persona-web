@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { AuthClient } from "@dfinity/auth-client";
 
 const AuthPage = () => {
   const { login, isAuthenticated } = useAuth();
@@ -21,27 +22,48 @@ const AuthPage = () => {
   const handleInternetIdentityLogin = async () => {
     setIsLoading(true);
     try {
-      // Simulate Internet Identity login
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mock user data - in real app this would come from ICP
-      const userData = {
-        id: 'user_' + Math.random().toString(36).substr(2, 9),
-        name: 'Demo User',
-        email: 'demo@personapulse.com',
-        profileImage: 'https://api.dicebear.com/7.x/avataaars/svg?seed=demo'
-      };
+      // Create an AuthClient instance
+      const authClient = await AuthClient.create();
 
-      login(userData);
-      toast({
-        title: "Welcome to PersonaPulse!",
-        description: "Successfully authenticated with Internet Identity",
+      // Start the login process
+      await authClient.login({
+        identityProvider: "https://identity.ic0.app/#authorize",
+        onSuccess: async () => {
+          const identity = authClient.getIdentity();
+          const principal = identity.getPrincipal().toText();
+
+          // You can fetch additional user info from your backend/canister if needed
+          const userData = {
+            id: principal,
+            name: 'ICP User', // You may want to fetch/display a real name if available
+            email: '', // ICP does not provide email by default
+            profileImage: `https://api.dicebear.com/7.x/avataaars/svg?seed=${principal}`
+          };
+
+          login(userData);
+          toast({
+            title: "Welcome to PersonaPulse!",
+            description: "Successfully authenticated with Internet Identity",
+          });
+          navigate('/dashboard');
+        },
+        onError: (err) => {
+          toast({
+            title: "Authentication Failed",
+            description: err && typeof err === "object" && "message" in err
+              ? (err as any).message
+              : err && typeof err === "string"
+              ? err
+              : "Please try again",
+            variant: "destructive",
+          });
+        },
+        windowOpenerFeatures: "left=100,top=100,width=600,height=700"
       });
-      navigate('/dashboard');
     } catch (error) {
       toast({
         title: "Authentication Failed",
-        description: "Please try again",
+        description: (error instanceof Error ? error.message : "Please try again"),
         variant: "destructive",
       });
     } finally {
