@@ -15,7 +15,7 @@ const AuthPage = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard');
+      navigate('/enroll');
     }
   }, [isAuthenticated, navigate]);
 
@@ -45,16 +45,12 @@ const AuthPage = () => {
             title: "Welcome to PersonaPulse!",
             description: "Successfully authenticated with Internet Identity",
           });
-          navigate('/dashboard');
+          navigate('/enroll');
         },
         onError: (err) => {
           toast({
             title: "Authentication Failed",
-            description: err && typeof err === "object" && "message" in err
-              ? (err as any).message
-              : err && typeof err === "string"
-              ? err
-              : "Please try again",
+            description: err?.message || "Please try again",
             variant: "destructive",
           });
         },
